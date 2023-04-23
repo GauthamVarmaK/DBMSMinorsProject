@@ -1,0 +1,2 @@
+# DBMSMinorsProject
+DBMS Minors Project
