@@ -1,40 +1,119 @@
-import mysql.connector
+# Create a CRUD UI for the components table. The UI should have the following features:
+# - A table that displays all the components in the database
+# - A form to add a new component to the database
+# - A form to update an existing component in the database
+# - A form to delete an existing component from the database
+
 import streamlit as st
 import pandas as pd
+import numpy as np
+import mysql.connector
 
 db = mysql.connector.connect(
     host="localhost",
     port="3306",
     user="root",
-    password="winterfox@2003",  
+    password="",
     database="electronics_store"
 )
 
 cursor = db.cursor()
 
-st.title("Store Details")
+st.set_page_config(
+    page_title="Components CRUD UI",
+    layout="wide",
+    page_icon="🔌",
+)
 
-cursor.execute("SELECT * FROM Components")
-st.dataframe(pd.DataFrame(cursor.fetchall(),columns=("Component ID","Description","Part no","Manufacurer ID","Name","Life Cycle","Category","Datasheet","ROHS","Mount Type")))
+st.title("Components CRUD UI")
 
-st.subheader("Add a new component")
+st.markdown(
+"""
+    This is the CRUD UI for the components table.
+"""
+)
 
-comp_id = st.number_input("comp_id",key="comp_id_create")
-desc = st.text_input("desc",key="desc_create")
-part_no = st.text_input("part_no",key="part_no_create")
-mf_id = st.text_input("mf_id",key="mf_id_create")
-name = st.text_input("name",key="name_create")
-life_cycle = st.text_input("life_cycle",key="life_cycle_create")
-category = st.text_input("category",key="category_create")
-datasheet = st.text_input("datasheet",key="datasheet_create")
-rohs = st.text_input("rohs",key="rohs_create")
-mount = st.text_input("mount",key="mount_create")
+st.markdown(
+"""
+    ## Table of all components
+"""
+)
 
-if st.button("Add Component"):
-    cursor.execute("INSERT INTO Components VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (comp_id, desc, part_no, mf_id, name, life_cycle, category, datasheet, rohs, mount))
+cursor.execute("SELECT * FROM components")
+components = cursor.fetchall()
+
+components_df = pd.DataFrame(components, columns=["comp_id", "description", "part_no", "mf_id", "name", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
+
+st.dataframe(components_df)
+
+st.markdown(
+"""
+    ## Add a new component
+"""
+)
+
+comp_id = st.number_input("Component ID", key="comp_id_add")
+description = st.text_input("Description", key="description_add")
+part_no = st.text_input("Part Number", key="part_no_add")
+mf_id = st.text_input("Manufacturer ID", key="mf_id_add")
+name = st.text_input("Name", key="name_add")
+lifecycle = st.text_input("Lifecycle", key="lifecycle_add")
+category = st.text_input("Category", key="category_add")
+datasheet = st.text_input("Datasheet", key="datasheet_add")
+rohs = st.text_input("RoHS", key="rohs_add")
+mount_type = st.text_input("Mount Type", key="mount_type_add")
+
+if st.button("Add"):
+    cursor.execute(f"INSERT INTO components VALUES ({comp_id}, '{description}', '{part_no}', '{mf_id}', '{name}', '{lifecycle}', '{category}', '{datasheet}', '{rohs}', '{mount_type}')")
     db.commit()
     st.success("Component added successfully")
-st.subheader("Update a Component")
+
+st.markdown("""
+    ## Update an existing component
+"""
+)
+
+comp_id = st.number_input("Component ID", key="comp_id_update")
+description = st.text_input("Description", key="description_update")
+part_no = st.text_input("Part Number", key="part_no_update")
+mf_id = st.text_input("Manufacturer ID", key="mf_id_update")
+name = st.text_input("Name", key="name_update")
+lifecycle = st.text_input("Lifecycle", key="lifecycle_update")
+category = st.text_input("Category", key="category_update")
+datasheet = st.text_input("Datasheet", key="datasheet_update")
+rohs = st.text_input("RoHS", key="rohs_update")
+mount_type = st.text_input("Mount Type", key="mount_type_update")
+
+if st.button("Update"):
+    cursor.execute(f"UPDATE components SET description='{description}', part_no='{part_no}', mf_id='{mf_id}', name='{name}', lifecycle='{lifecycle}', category='{category}', datasheet='{datasheet}', rohs='{rohs}', mount_type='{mount_type}' WHERE comp_id={comp_id}")
+    db.commit()
+    st.success("Component updated successfully")
+
+st.markdown("""
+    ## Delete an existing component
+""")
+
+comp_id = st.number_input("Component ID", key="comp_id_delete")
+
+if st.button("Delete"):
+    cursor.execute(f"DELETE FROM components WHERE comp_id={comp_id}")
+    db.commit()
+    st.success("Component deleted successfully")
+
+st.markdown("""
+    ## Search for a component
+""")
+
+comp_id = st.number_input("Component ID", key="comp_id_search")
+
+if st.button("Search"):
+    cursor.execute(f"SELECT * FROM components WHERE comp_id={comp_id}")
+    component = cursor.fetchone()
+    if component is None:
+        st.error("Component not found")
+    else:
+        component_df = pd.DataFrame([component], columns=["comp_id", "description", "part_no", "mf_id", "name", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
+        st.dataframe(component_df)
 
 cursor.close()
 db.close()
