@@ -10,4 +10,4 @@ st.title('Relational Schema')
 st.markdown('''
     This is the Relational Schema of the database. 
 ''')
-st.image('images/RelationalSchema.jpg', use_column_width=True)
+st.image('images/RelationalSchema.png', use_column_width=True)
