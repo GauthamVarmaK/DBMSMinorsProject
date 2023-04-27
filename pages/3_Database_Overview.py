@@ -18,14 +18,12 @@ CREATE DATABASE electronics_store;
 
 USE electronics_store;
 
--- Create tables
 CREATE TABLE users(
    user_id VARCHAR(50) PRIMARY KEY,
    NAME VARCHAR(50),
    email_id VARCHAR(50) CHECK (email_id LIKE '%@%.%'),
    phone_number VARCHAR(50) CHECK (LENGTH(phone_number) = 10),
    dob DATE,
-   age INT CHECK (age >= 18),
    user_since DATE,
    address VARCHAR(100),
    city VARCHAR(50),
@@ -35,7 +33,7 @@ CREATE TABLE users(
 
 CREATE TABLE manufacturer(
    mf_id VARCHAR(50) PRIMARY KEY,
-   NAME VARCHAR(50) NOT NULL,
+   name VARCHAR(50) NOT NULL,
    description VARCHAR(100),
    location VARCHAR(50)
 );
@@ -82,7 +80,7 @@ CREATE TABLE price_slabs(
 CREATE TABLE orders(
    order_id INT PRIMARY KEY,
    user_id VARCHAR(50),
-   DATETIME DATETIME,
+   date_time DATETIME,
    order_type VARCHAR(50),
    FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
