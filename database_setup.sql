@@ -87,3 +87,8 @@ CREATE TABLE payments(
    method VARCHAR(50),
    FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
+
+-- Create a user view with age 
+CREATE VIEW user_age AS
+SELECT user_id, name, email_id, phone_number, dob, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, user_since, address, city, state, pincode
+FROM users;

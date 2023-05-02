@@ -107,6 +107,10 @@ CREATE TABLE payments(
    method VARCHAR(50),
    FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
+
+CREATE VIEW user_age AS
+SELECT user_id, name, email_id, phone_number, dob, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, user_since, address, city, state, pincode
+FROM users;
 ```
 """
 )
@@ -236,3 +240,28 @@ payments = pd.DataFrame(
     payments, columns=["payment_id", "order_id", "trnx_no", "amount", "method"]
 )
 st.dataframe(payments)
+
+st.markdown(
+    """
+# User Age [View]
+"""
+)
+cursor.execute("SELECT * FROM user_age")
+user_age = cursor.fetchall()
+user_age = pd.DataFrame(
+    user_age,
+    columns=[
+        "user_id",
+        "name",
+        "email_id",
+        "phone_number",
+        "dob",
+        "age",
+        "user_since",
+        "address",
+        "city",
+        "state",
+        "pincode",
+    ],
+)
+st.dataframe(user_age)
