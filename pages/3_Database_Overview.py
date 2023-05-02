@@ -20,7 +20,7 @@ USE electronics_store;
 
 CREATE TABLE users(
    user_id VARCHAR(50) PRIMARY KEY,
-   NAME VARCHAR(50),
+   name VARCHAR(50),
    email_id VARCHAR(50) CHECK (email_id LIKE '%@%.%'),
    phone_number VARCHAR(50) CHECK (LENGTH(phone_number) = 10),
    dob DATE,
@@ -82,6 +82,7 @@ CREATE TABLE orders(
    user_id VARCHAR(50),
    date_time DATETIME,
    order_type VARCHAR(50),
+   status VARCHAR(50),
    FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
 
