@@ -10,4 +10,4 @@ st.title('ER Diagram')
 st.markdown('''
     This is the ER Diagram of the database. 
 ''')
-st.image('images/ERDiagram.jpg', use_column_width=True)
+st.image('images/ERDiagram.png', use_column_width=True)
