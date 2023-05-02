@@ -56,7 +56,7 @@ CREATE TABLE stock(
 CREATE TABLE price_slabs(
    comp_id INT,
    min_qty INT,
-   price INT NOT NULL,
+   price DECIMAL(6,2) NOT NULL,
    FOREIGN KEY(comp_id) REFERENCES components(comp_id),
    PRIMARY KEY(comp_id, min_qty)
 );

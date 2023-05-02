@@ -43,11 +43,11 @@ st.markdown('''
 ## Query 2
 ### Find all resistors that are of 220 Ohms that are in Production
 ```sql
-SELECT * FROM components WHERE (comp_id IN (SELECT comp_id from description WHERE param='resistance' AND value='220')) AND lifecycle = '20 years';
+SELECT * FROM components WHERE (comp_id IN (SELECT comp_id from description WHERE param='Resistance' AND value='220 Ohms')) AND lifecycle = 'InProduction';
 ```
 ''')
 
-cursor.execute("SELECT * FROM components WHERE (comp_id IN (SELECT comp_id from description WHERE param='resistance' AND value='220')) AND lifecycle = '20 years';")
+cursor.execute("SELECT * FROM components WHERE (comp_id IN (SELECT comp_id from description WHERE param='Resistance' AND value='220 Ohms')) AND lifecycle = 'InProduction';")
 components = cursor.fetchall()
 
 components_df = pd.DataFrame(components, columns=["comp_id", "description", "part_no", "mf_id", "name", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
@@ -77,7 +77,7 @@ st.markdown('''
 ```
 ''')
 
-cursor.execute("SELECT 'Hello ALL'")
+cursor.execute("SELECT 'Hello World!';")
 components = cursor.fetchall()
 
 components_df = pd.DataFrame(components, columns=["TODO"])
@@ -87,11 +87,11 @@ st.markdown('''
 ## Query 5
 ### Only list components that are RoHS compliant sold by a certain manufacturer
 ```sql
-SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type FROM components WHERE components.rohs='Yes' AND components.mf_id='MF-0001';
+SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type FROM components WHERE components.rohs='Compliant' AND components.mf_id='1';
 ```
 ''')
 
-cursor.execute("SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type FROM components WHERE components.rohs='Yes' AND components.mf_id='MF-0001';")
+cursor.execute("SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type FROM components WHERE components.rohs='Compliant' AND components.mf_id='1';")
 components = cursor.fetchall()
 
 components_df = pd.DataFrame(components, columns=["comp_id", "name", "part_no", "mf_id", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
@@ -101,14 +101,14 @@ st.markdown('''
 ## Query 6
 ### List orders whose status is Not shipped if placed before a week
 ```sql
-SELECT * FROM orders WHERE status='Not Shipped' AND date_time < DATE_SUB(NOW(), INTERVAL 1 WEEK);
+SELECT * FROM orders WHERE status='ToBeShipped' AND date_time < DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK));
 ```
 ''')
 
-cursor.execute("SELECT * FROM orders WHERE status='Not Shipped' AND date_time < DATE_SUB(NOW(), INTERVAL 1 WEEK);")
+cursor.execute("SELECT * FROM orders WHERE status='ToBeShipped' AND date_time < DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK));")
 orders = cursor.fetchall()
 
-orders_df = pd.DataFrame(orders, columns=["order_id", "user_id", "date_time", "order_type"])
+orders_df = pd.DataFrame(orders, columns=["order_id", "user_id", "date_time", "order_type","status"])
 st.dataframe(orders_df)
 
 st.markdown('''
@@ -131,11 +131,11 @@ st.markdown('''
 ```sql
 SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type,stock.in_stock,stock.lead_time
 FROM components,stock,description
-WHERE components.comp_id=stock.comp_id AND components.comp_id=description.comp_id AND description.param='resistance' AND description.value='45' AND components.lifecycle='InProduction' AND stock.in_Stock>400;
+WHERE components.comp_id=stock.comp_id AND components.comp_id=description.comp_id AND description.param='Resistance' AND description.value='45 Ohms' AND components.lifecycle='InProduction' AND stock.in_Stock>400;
 ```
 ''')
 
-cursor.execute("SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type,stock.in_stock,stock.lead_time FROM components,stock,description WHERE components.comp_id=stock.comp_id AND components.comp_id=description.comp_id AND description.param='resistance' AND description.value='45' AND components.lifecycle='InProduction' AND stock.in_stock>400;")
+cursor.execute("SELECT components.comp_id,components.name,components.part_no,components.mf_id,components.lifecycle,components.category,components.datasheet,components.rohs,components.mount_type,stock.in_stock,stock.lead_time FROM components,stock,description WHERE components.comp_id=stock.comp_id AND components.comp_id=description.comp_id AND description.param='Resistance' AND description.value='45 Ohms' AND components.lifecycle='InProduction' AND stock.in_stock>400;")
 components = cursor.fetchall()
 
 components_df = pd.DataFrame(components, columns=["comp_id", "name", "part_no", "mf_id", "lifecycle", "category", "datasheet", "rohs", "mount_type", "quantity", "lead_time"])
