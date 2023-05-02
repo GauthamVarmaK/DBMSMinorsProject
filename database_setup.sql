@@ -92,3 +92,60 @@ CREATE TABLE payments(
 CREATE VIEW user_age AS
 SELECT user_id, name, email_id, phone_number, dob, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, user_since, address, city, state, pincode
 FROM users;
+
+-- payment_backup table for trigger demo
+CREATE TABLE payments_backup(
+   payment_id INT PRIMARY KEY,
+   order_id INT,
+   trnx_no VARCHAR(50),
+   amount INT,
+   method VARCHAR(50),
+   deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   FOREIGN KEY(order_id) REFERENCES orders(order_id)
+);
+
+-- Trigger to backup deleted payments
+DELIMITER $$
+CREATE TRIGGER backup_payments
+AFTER DELETE ON payments
+FOR EACH ROW
+BEGIN
+   INSERT INTO payments_backup(payment_id, order_id, trnx_no, amount, method)
+   VALUES (OLD.payment_id, OLD.order_id, OLD.trnx_no, OLD.amount, OLD.method);
+END $$
+DELIMITER ;
+
+-- Create a function to chech if a user is prime
+DELIMITER $$
+CREATE FUNCTION is_prime_user(user_id VARCHAR(50)) RETURNS VARCHAR(5)
+BEGIN
+   DECLARE user_since DATE;
+   DECLARE is_prime VARCHAR(5);
+   
+   SELECT users.user_since INTO user_since
+   FROM users
+   WHERE users.user_id = user_id;
+
+   IF TIMESTAMPDIFF(YEAR, user_since, CURDATE()) > 4 THEN
+      SET is_prime = 'True';
+   ELSE
+      SET is_prime = 'False';
+   END IF;
+
+   RETURN is_prime;
+END;$$
+DELIMITER ;
+
+-- create procedure to restore deleted payments and delete from backup
+DELIMITER $$
+CREATE PROCEDURE restore_payment(IN payment_id1 INT)
+BEGIN
+   INSERT INTO payments(payment_id, order_id, trnx_no, amount, method)
+   SELECT payment_id, order_id, trnx_no, amount, method
+   FROM payments_backup
+   WHERE payment_id = payment_id1;
+
+   DELETE FROM payments_backup
+   WHERE payment_id = payment_id1;
+END $$
+DELIMITER ;

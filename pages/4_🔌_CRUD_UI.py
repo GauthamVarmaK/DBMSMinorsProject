@@ -29,6 +29,9 @@ st.markdown(
 st.markdown(
     """
     ## Table of all components
+    ```sql
+    SELECT * FROM components;
+    ```
 """
 )
 
@@ -76,6 +79,7 @@ if st.button("Add"):
     )
     db.commit()
     st.success("Component added successfully")
+    st.info(f"**Excecuted query:** `INSERT INTO components VALUES ({comp_id}, '{description}', '{part_no}', '{mf_id}', '{name}', '{lifecycle}', '{category}', '{datasheet}', '{rohs}', '{mount_type}')`")
 
 st.markdown(
     """
@@ -100,6 +104,7 @@ if st.button("Update"):
     )
     db.commit()
     st.success("Component updated successfully")
+    st.info(f"**Excecuted query:** `UPDATE components SET description='{description}', part_no='{part_no}', mf_id='{mf_id}', name='{name}', lifecycle='{lifecycle}', category='{category}', datasheet='{datasheet}', rohs='{rohs}', mount_type='{mount_type}' WHERE comp_id={comp_id}`")
 
 st.markdown(
     """
@@ -113,6 +118,7 @@ if st.button("Delete"):
     cursor.execute(f"DELETE FROM components WHERE comp_id={comp_id}")
     db.commit()
     st.success("Component deleted successfully")
+    st.info(f"**Excecuted query:** `DELETE FROM components WHERE comp_id={comp_id}`")
 
 st.markdown(
     """
@@ -144,6 +150,7 @@ if st.button("Search"):
             ],
         )
         st.dataframe(component_df)
+    st.info(f"**Excecuted query:** `SELECT * FROM components WHERE comp_id={comp_id}`")
 
 cursor.close()
 db.close()

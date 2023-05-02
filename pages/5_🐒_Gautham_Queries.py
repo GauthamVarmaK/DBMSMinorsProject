@@ -19,16 +19,18 @@ st.markdown(
 st.markdown(
     """
 ## Query 1
-### Display the top 20 orders today sorted by price.
+### Display the top 20 orders this year sorted by price.
 ```sql
 SELECT orders.order_id, user_id, date_time, order_type, pm.amount 
 FROM orders, payments AS pm 
-WHERE order_id = pm.order_id ORDER BY pm.amount DESC LIMIT 20;
+WHERE order_id = pm.order_id AND date_time LIKE '2023%'
+ORDER BY pm.amount DESC
+LIMIT 20;
 ```
 """
 )
 cursor.execute(
-    "SELECT orders.order_id,user_id,date_time,order_type,pm.amount FROM orders,payments AS pm WHERE orders.order_id=pm.order_id ORDER BY pm.amount DESC LIMIT 20;"
+    "SELECT orders.order_id,user_id,date_time,order_type,pm.amount FROM orders,payments AS pm WHERE orders.order_id=pm.order_id AND date_time LIKE '2023%' ORDER BY pm.amount DESC LIMIT 20;"
 )
 orders = cursor.fetchall()
 orders_df = pd.DataFrame(
@@ -75,7 +77,8 @@ st.markdown(
 ```sql
 SELECT components.comp_id, components.name, components.part_no, components.mf_id, components.lifecycle, components.category, components.datasheet, components.rohs, components.mount_type, stock.in_stock, stock.location, stock.lead_time 
 FROM components,stock 
-WHERE components.comp_id = stock.comp_id AND stock.in_stock < 50 AND stock.lead_time > 8 LIMIT 50;
+WHERE components.comp_id = stock.comp_id AND stock.in_stock < 50 AND stock.lead_time > 8 
+LIMIT 50;
 ```
 """
 )
@@ -105,15 +108,23 @@ st.dataframe(components_df)
 st.markdown(
     """
 ## Query 4
-### List the top 10 products sold by any manufacturer based on the total number of pieces sold.
+### List the top 10 products sold by a given manufacturer based on the total number of pieces sold.
 ```sql
--- TODO
+SELECT components.comp_id, components.name, total_pieces_sold 
+FROM components, (
+    SELECT comp_id AS cmpid, SUM(order_comp.qty) AS total_pieces_sold
+    FROM  order_comp
+    GROUP BY comp_id
+) AS comp_sold
+WHERE components.comp_id = comp_sold.cmpid AND components.mf_id = '1'
+ORDER BY total_pieces_sold DESC
+LIMIT 10;
 ```
 """
 )
-cursor.execute("SELECT 'Hello World!';")
+cursor.execute("SELECT components.comp_id, components.name, total_pieces_sold FROM components, ( SELECT comp_id AS cmpid, SUM(order_comp.qty) AS total_pieces_sold FROM order_comp GROUP BY comp_id ) AS comp_sold WHERE components.comp_id = comp_sold.cmpid AND components.mf_id = '1' ORDER BY total_pieces_sold DESC LIMIT 10;")
 components = cursor.fetchall()
-components_df = pd.DataFrame(components, columns=["TODO"])
+components_df = pd.DataFrame(components, columns=["Component ID", "Name", "Total Pieces Sold"])
 st.dataframe(components_df)
 st.markdown(
     """
@@ -177,7 +188,8 @@ st.markdown(
 SELECT method AS payment_mode, COUNT(method)
 FROM payments
 GROUP BY payment_mode
-ORDER BY COUNT(payment_mode) DESC LIMIT 1;
+ORDER BY COUNT(payment_mode) DESC
+LIMIT 1;
 ```
 """
 )
