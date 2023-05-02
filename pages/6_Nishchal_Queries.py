@@ -7,7 +7,7 @@ db = mysql.connector.connect(
     host="localhost",
     port="3306",
     user="root",
-    password="",
+    password="winterfox@2003",
     database="electronics_store"
 )
 
@@ -45,7 +45,8 @@ st.markdown('''
 ## Query 2
 ### Tabulate orders with respect to user order type.
 ```sql
-SELECT users.user_id,orders.order_id,orders.date_time,orders.order_type FROM users,orders WHERE orders.user_id = users.user_id AND orders.date_time < '2022-07-01 00:00:00' AND order_type='Prime';
+SELECT users.user_id,orders.order_id,orders.date_time,orders.order_type 
+FROM users,orders WHERE orders.user_id = users.user_id AND orders.date_time < '2022-07-01 00:00:00' AND order_type='Prime';
 ```
 ''')
 
@@ -59,7 +60,8 @@ st.markdown('''
 ## Query 3
 ### Give the best price slabs with respect to components 
 ```sql
-SELECT components.comp_id,price_slabs.min_qty,price_slabs.price,price_slabs.price * price_slabs.min_qty total_price,components.name FROM price_slabs JOIN components ON price_slabs.comp_id=components.comp_id WHERE price <= 3 AND min_qty <= 100;
+SELECT components.comp_id,price_slabs.min_qty,price_slabs.price,price_slabs.price * price_slabs.min_qty total_price,components.name 
+FROM price_slabs JOIN components ON price_slabs.comp_id=components.comp_id WHERE price <= 3 AND min_qty <= 100;
 ```
 ''')
 
@@ -74,7 +76,8 @@ st.markdown('''
 ## Query 4
 ### Check how many manufacturers are selling surface mount components with lifecyle of NFNPD and the components is resistor.
 ```sql
-SELECT components.mf_id,manufacturer.name,manufacturer.location,components.lifecycle,components.category FROM manufacturer JOIN components ON components.mf_id = manufacturer.mf_id AND (SELECT(mount_type='Surface Mount')) AND (SELECT(lifecycle='InProduction')) AND components.category='Resistors';
+SELECT components.mf_id,manufacturer.name,manufacturer.location,components.lifecycle,components.category 
+FROM manufacturer JOIN components ON components.mf_id = manufacturer.mf_id AND (SELECT(mount_type='Surface Mount')) AND (SELECT(lifecycle='InProduction')) AND components.category='Resistors';
 ```
 ''')
 
@@ -89,14 +92,15 @@ st.markdown('''
 ## Query 5
 ### Track users who are paying through cash 
 ```sql
-SELECT payments.method,orders.order_id,orders.user_id,payments.trnx_no,payments.amount FROM payments,orders,users WHERE orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';
+Select payments.method,orders.order_id,orders.user_id,users.name,phone_number,address,city,state,pincode,payments.trnx_no,payments.amount 
+FROM payments,orders,users where orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';
 ```
 ''')
 
-cursor.execute("SELECT payments.method,orders.order_id,orders.user_id,payments.trnx_no,payments.amount FROM payments,orders,users WHERE orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';")
+cursor.execute("Select payments.method,orders.order_id,orders.user_id,users.name,phone_number,address,city,state,pincode,payments.trnx_no,payments.amount FROM payments,orders,users where orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';")
 payments = cursor.fetchall()
 
-payments_df = pd.DataFrame(payments, columns=["method", "order_id", "user_id","trnx_no","amount"])
+payments_df = pd.DataFrame(payments, columns=["method", "order_id", "user_id","name","phone_number","address","city","state","pincode","trnx_no","amount"])
 st.dataframe(payments_df)
 
 
