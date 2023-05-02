@@ -68,7 +68,7 @@ st.dataframe(manufacturer_df)
 st.markdown(
     """
 ## Query 4
-### )Display the user_id, name  and phone number of customers whose order status is Missing
+### Display the user_id, name  and phone number of customers whose order status is Missing
 ```sql
 SELECT users.user_id, users.name, users.phone_number, orders.status FROM users LEFT JOIN orders ON users.user_id=orders.user_id and orders.status='Missing';
 ```
