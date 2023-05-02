@@ -16,7 +16,7 @@ cursor = db.cursor()
 st.set_page_config(
     page_title="Nishchal Queries",
     layout="wide",
-    page_icon="🤵"
+    page_icon="🐨"
 )
 
 st.title("Nishchal Queries - [PES1UG21EC169]")
@@ -29,19 +29,21 @@ st.markdown('''
 ## Query 1
 ###  List the components that are limited in stock.
 ```sql
-SELECT stock.comp_id,components.part_no,stock.normally_stocking,stock.in_stock FROM stock JOIN components ON components.comp_id=stock.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no'));"
+SELECT stock.comp_id,manufacturer.name as mf_name,components.name as comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty 
+FROM 
+stock INNER JOIN components ON components.comp_id=stock.comp_id INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;
 ```
 ''')
 
-cursor.execute("SELECT stock.comp_id,components.part_no,stock.normally_stocking,stock.in_stock FROM stock JOIN components ON components.comp_id=stock.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no'));")
+cursor.execute("SELECT stock.comp_id,manufacturer.name as mf_name,components.name as comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty FROM stock INNER JOIN components ON components.comp_id=stock.comp_id INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;")
 stock = cursor.fetchall()
 
-stock_df = pd.DataFrame(stock, columns=["comp_id", "part_no", "normally_stocking","in_stock"])
+stock_df = pd.DataFrame(stock, columns=["comp_id", "mf_name", "comp_name", "datasheet", "part_no", "normally_stocking","in_stock", "price", "min_qty"])
 st.dataframe(stock_df)
 
 st.markdown('''
 ## Query 2
-### Tabulate orders with respect to user
+### Tabulate orders with respect to user order type.
 ```sql
 SELECT users.user_id,orders.order_id,orders.date_time,orders.order_type FROM users,orders WHERE orders.user_id = users.user_id AND orders.date_time < '2022-07-01 00:00:00' AND order_type='Prime';
 ```
@@ -55,16 +57,16 @@ st.dataframe(users_df)
 
 st.markdown('''
 ## Query 3
-### Give the best price slabs with respect to component ID
+### Give the best price slabs with respect to components 
 ```sql
-SELECT price_slabs.price,price_slabs.min_qty,components.comp_id FROM price_slabs,components WHERE price < '100' AND price_slabs.min_qty < '50' AND price_slabs.comp_id=components.comp_id;
+SELECT components.comp_id,price_slabs.min_qty,price_slabs.price,price_slabs.price * price_slabs.min_qty total_price,components.name FROM price_slabs JOIN components ON price_slabs.comp_id=components.comp_id WHERE price <= 3 AND min_qty <= 100;
 ```
 ''')
 
-cursor.execute("SELECT price_slabs.price,price_slabs.min_qty,components.comp_id FROM price_slabs,components WHERE price < '100' AND price_slabs.min_qty < '50' AND price_slabs.comp_id=components.comp_id;")
+cursor.execute("SELECT components.comp_id,price_slabs.min_qty,price_slabs.price,price_slabs.price * price_slabs.min_qty total_price,components.name FROM price_slabs JOIN components ON price_slabs.comp_id=components.comp_id WHERE price <= 3 AND min_qty <= 100;")
 price_slabs = cursor.fetchall()
 
-price_slabs_df = pd.DataFrame(price_slabs, columns=["price", "min_qty", "comp_id"])
+price_slabs_df = pd.DataFrame(price_slabs, columns=["comp_id", "min_qty", "price", "total_price","name"])
 st.dataframe(price_slabs_df)
 
 
