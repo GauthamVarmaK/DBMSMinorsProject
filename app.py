@@ -1,16 +1,4 @@
-import mysql.connector
 import streamlit as st
-import pandas as pd
-
-db = mysql.connector.connect(
-    host="localhost",
-    port="3306",
-    user="root",
-    password="",
-    database="electronics_store"
-)
-
-cursor = db.cursor()
 
 st.set_page_config(
     page_title="Overview",
@@ -21,7 +9,7 @@ st.set_page_config(
 st.write("# Electronic Components Marketplace 👋")
 
 st.markdown(
-"""
+    """
     Project made by:
     | SRN | Name |
     | --- | --- |

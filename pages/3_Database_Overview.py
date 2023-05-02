@@ -1,29 +1,22 @@
-# create a stream lit page to describe the database
-
 import streamlit as st
 import pandas as pd
-import numpy as np
 import mysql.connector
+from config import db_config
 
-db = mysql.connector.connect(
-    host="localhost",
-    port="3306",
-    user="root",
-    password="",
-    database="electronics_store"
-)
-
+db = mysql.connector.connect(**db_config)
 cursor = db.cursor()
 
-st.set_page_config(page_title='Database Overview', page_icon="📊",layout='wide')
+st.set_page_config(page_title="Database Overview", page_icon="📊", layout="wide")
 
-st.title('Database Overview')
+st.title("Database Overview")
+st.markdown(
+    """
+This is the overview of the database.
+"""
+)
 
-st.markdown('''
-    This is the overview of the database.
-''')
-
-st.markdown('''
+st.markdown(
+    """
 ```sql
 CREATE DATABASE electronics_store;
 
@@ -115,85 +108,131 @@ CREATE TABLE payments(
    FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
 ```
-''');
+"""
+)
 
-st.markdown('''
+st.markdown(
+    """
 # Users
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM users")
 users = cursor.fetchall()
-users = pd.DataFrame(users, columns=['user_id', 'name', 'email_id', 'phone_number', 'dob', 'user_since', 'address', 'city', 'state', 'pincode'])
+users = pd.DataFrame(
+    users,
+    columns=[
+        "user_id",
+        "name",
+        "email_id",
+        "phone_number",
+        "dob",
+        "user_since",
+        "address",
+        "city",
+        "state",
+        "pincode",
+    ],
+)
 st.dataframe(users)
 
-st.markdown('''
+st.markdown(
+    """
 # Manufacturer
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM manufacturer")
 manufacturer = cursor.fetchall()
-manufacturer = pd.DataFrame(manufacturer, columns=['mf_id', 'name', 'description', 'location'])
+manufacturer = pd.DataFrame(
+    manufacturer, columns=["mf_id", "name", "description", "location"]
+)
 st.dataframe(manufacturer)
 
-st.markdown('''
+st.markdown(
+    """
 # Components
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM components")
 components = cursor.fetchall()
-components = pd.DataFrame(components, columns=['comp_id', 'description', 'part_no', 'mf_id', 'name', 'lifecycle', 'category', 'datasheet', 'rohs', 'mount_type'])
+components = pd.DataFrame(
+    components,
+    columns=[
+        "comp_id",
+        "description",
+        "part_no",
+        "mf_id",
+        "name",
+        "lifecycle",
+        "category",
+        "datasheet",
+        "rohs",
+        "mount_type",
+    ],
+)
 st.dataframe(components)
 
-st.markdown('''
+st.markdown(
+    """
 # Description
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM description")
 description = cursor.fetchall()
-description = pd.DataFrame(description, columns=['comp_id', 'param', 'value'])
+description = pd.DataFrame(description, columns=["comp_id", "param", "value"])
 st.dataframe(description)
 
-st.markdown('''
+st.markdown(
+    """
 # Stock
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM stock")
 stock = cursor.fetchall()
-stock = pd.DataFrame(stock, columns=['comp_id', 'in_stock', 'lead_time', 'normally_stocking'])
+stock = pd.DataFrame(
+    stock, columns=["comp_id", "in_stock", "lead_time", "normally_stocking"]
+)
 st.dataframe(stock)
 
-st.markdown('''
+st.markdown(
+    """
 # Price Slabs
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM price_slabs")
 price_slabs = cursor.fetchall()
-price_slabs = pd.DataFrame(price_slabs, columns=['comp_id', 'min_qty', 'price'])
+price_slabs = pd.DataFrame(price_slabs, columns=["comp_id", "min_qty", "price"])
 st.dataframe(price_slabs)
 
-st.markdown('''
+st.markdown(
+    """
 # Orders
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM orders")
 orders = cursor.fetchall()
-orders = pd.DataFrame(orders, columns=['order_id', 'user_id', 'date_time', 'order_type', 'status'])
+orders = pd.DataFrame(
+    orders, columns=["order_id", "user_id", "date_time", "order_type", "status"]
+)
 st.dataframe(orders)
 
-st.markdown('''
+st.markdown(
+    """
 # Order Components
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM order_comp")
 order_comp = cursor.fetchall()
-order_comp = pd.DataFrame(order_comp, columns=['order_id', 'comp_id', 'qty'])
+order_comp = pd.DataFrame(order_comp, columns=["order_id", "comp_id", "qty"])
 st.dataframe(order_comp)
 
-st.markdown('''
+st.markdown(
+    """
 # Payments
-''')
-
+"""
+)
 cursor.execute("SELECT * FROM payments")
 payments = cursor.fetchall()
-payments = pd.DataFrame(payments, columns=['payment_id', 'order_id', 'trnx_no', 'amount', 'method'])
+payments = pd.DataFrame(
+    payments, columns=["payment_id", "order_id", "trnx_no", "amount", "method"]
+)
 st.dataframe(payments)

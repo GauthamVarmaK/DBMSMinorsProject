@@ -1,12 +1,5 @@
-# Create a CRUD UI for the components table. The UI should have the following features:
-# - A table that displays all the components in the database
-# - A form to add a new component to the database
-# - A form to update an existing component in the database
-# - A form to delete an existing component from the database
-
 import streamlit as st
 import pandas as pd
-import numpy as np
 import mysql.connector
 
 db = mysql.connector.connect(
@@ -14,7 +7,7 @@ db = mysql.connector.connect(
     port="3306",
     user="root",
     password="",
-    database="electronics_store"
+    database="electronics_store",
 )
 
 cursor = db.cursor()
@@ -28,13 +21,13 @@ st.set_page_config(
 st.title("Components CRUD UI")
 
 st.markdown(
-"""
+    """
     This is the CRUD UI for the components table.
 """
 )
 
 st.markdown(
-"""
+    """
     ## Table of all components
 """
 )
@@ -42,12 +35,26 @@ st.markdown(
 cursor.execute("SELECT * FROM components")
 components = cursor.fetchall()
 
-components_df = pd.DataFrame(components, columns=["comp_id", "description", "part_no", "mf_id", "name", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
+components_df = pd.DataFrame(
+    components,
+    columns=[
+        "comp_id",
+        "description",
+        "part_no",
+        "mf_id",
+        "name",
+        "lifecycle",
+        "category",
+        "datasheet",
+        "rohs",
+        "mount_type",
+    ],
+)
 
 st.dataframe(components_df)
 
 st.markdown(
-"""
+    """
     ## Add a new component
 """
 )
@@ -64,11 +71,14 @@ rohs = st.text_input("RoHS", key="rohs_add")
 mount_type = st.text_input("Mount Type", key="mount_type_add")
 
 if st.button("Add"):
-    cursor.execute(f"INSERT INTO components VALUES ({comp_id}, '{description}', '{part_no}', '{mf_id}', '{name}', '{lifecycle}', '{category}', '{datasheet}', '{rohs}', '{mount_type}')")
+    cursor.execute(
+        f"INSERT INTO components VALUES ({comp_id}, '{description}', '{part_no}', '{mf_id}', '{name}', '{lifecycle}', '{category}', '{datasheet}', '{rohs}', '{mount_type}')"
+    )
     db.commit()
     st.success("Component added successfully")
 
-st.markdown("""
+st.markdown(
+    """
     ## Update an existing component
 """
 )
@@ -85,13 +95,17 @@ rohs = st.text_input("RoHS", key="rohs_update")
 mount_type = st.text_input("Mount Type", key="mount_type_update")
 
 if st.button("Update"):
-    cursor.execute(f"UPDATE components SET description='{description}', part_no='{part_no}', mf_id='{mf_id}', name='{name}', lifecycle='{lifecycle}', category='{category}', datasheet='{datasheet}', rohs='{rohs}', mount_type='{mount_type}' WHERE comp_id={comp_id}")
+    cursor.execute(
+        f"UPDATE components SET description='{description}', part_no='{part_no}', mf_id='{mf_id}', name='{name}', lifecycle='{lifecycle}', category='{category}', datasheet='{datasheet}', rohs='{rohs}', mount_type='{mount_type}' WHERE comp_id={comp_id}"
+    )
     db.commit()
     st.success("Component updated successfully")
 
-st.markdown("""
+st.markdown(
+    """
     ## Delete an existing component
-""")
+"""
+)
 
 comp_id = st.number_input("Component ID", key="comp_id_delete")
 
@@ -100,9 +114,11 @@ if st.button("Delete"):
     db.commit()
     st.success("Component deleted successfully")
 
-st.markdown("""
+st.markdown(
+    """
     ## Search for a component
-""")
+"""
+)
 
 comp_id = st.number_input("Component ID", key="comp_id_search")
 
@@ -112,7 +128,21 @@ if st.button("Search"):
     if component is None:
         st.error("Component not found")
     else:
-        component_df = pd.DataFrame([component], columns=["comp_id", "description", "part_no", "mf_id", "name", "lifecycle", "category", "datasheet", "rohs", "mount_type"])
+        component_df = pd.DataFrame(
+            [component],
+            columns=[
+                "comp_id",
+                "description",
+                "part_no",
+                "mf_id",
+                "name",
+                "lifecycle",
+                "category",
+                "datasheet",
+                "rohs",
+                "mount_type",
+            ],
+        )
         st.dataframe(component_df)
 
 cursor.close()
