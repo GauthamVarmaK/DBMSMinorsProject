@@ -1,6 +1,6 @@
 INSERT INTO manufacturer VALUES('1', 'Lite-On Inc.', 'Building LEDS since 1983, leading producer', 'Mumbai');
 INSERT INTO manufacturer VALUES('2', 'Rutherford Tech', 'Building LEDS since 1983, leading producer', 'Kolkata');
-INSERT INTO manufacturer VALUES('3', 'TATA Inc.', 'The most trusted Manufacturers', 'Chennai');
+INSERT INTO manufacturer VALUES('3', 'TATA Inc.', 'The most trusted Manufacturers', 'Mumbai');
 INSERT INTO manufacturer VALUES('4', 'MasalaDosaResistors', 'Namma Bengaluru special', 'Bangalore');
 
 INSERT INTO components VALUES('16014451', 'LED ORANGE CLEAR SMD', ' LTST-C191KFKT', '1', 'Orange SMD LED', 'NFNPD', 'LEDS','https://optoelectronics.liteon.com/upload/download/DS22-2000-222/LTST-C191KFKT.pdf', 'Compliant', 'Surface Mount');

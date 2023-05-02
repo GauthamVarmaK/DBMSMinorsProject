@@ -8,7 +8,7 @@ cursor = db.cursor()
 
 st.set_page_config(page_title="Nishchal Queries", layout="wide", page_icon="🐨")
 
-st.title("Nishchal Queries - [PES1UG21EC169]")
+st.title("Nishchal's Queries")
 
 st.markdown(
     """
@@ -21,14 +21,16 @@ st.markdown(
 ## Query 1
 ###  List the components that are limited in stock.
 ```sql
-SELECT stock.comp_id,manufacturer.name as mf_name,components.name as comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty 
-FROM 
-stock INNER JOIN components ON components.comp_id=stock.comp_id INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;
+SELECT stock.comp_id,manufacturer.name AS mf_name,components.name AS comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty 
+FROM stock 
+INNER JOIN components ON components.comp_id = stock.comp_id
+INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id 
+JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;
 ```
 """
 )
 cursor.execute(
-    "SELECT stock.comp_id,manufacturer.name as mf_name,components.name as comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty FROM stock INNER JOIN components ON components.comp_id=stock.comp_id INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;"
+    "SELECT stock.comp_id,manufacturer.name AS mf_name,components.name AS comp_name,components.datasheet,components.part_no,stock.normally_stocking,stock.in_stock,price_slabs.price,min_qty FROM stock INNER JOIN components ON components.comp_id=stock.comp_id INNER JOIN manufacturer ON manufacturer.mf_id = components.mf_id JOIN price_slabs ON price_slabs.comp_id = components.comp_id AND stock.in_stock < 100000 AND (SELECT(stock.normally_stocking = 'no')) AND min_qty <= 100;"
 )
 stock = cursor.fetchall()
 stock_df = pd.DataFrame(
@@ -53,7 +55,8 @@ st.markdown(
 ### Tabulate orders with respect to user order type.
 ```sql
 SELECT users.user_id,orders.order_id,orders.date_time,orders.order_type 
-FROM users,orders WHERE orders.user_id = users.user_id AND orders.date_time < '2022-07-01 00:00:00' AND order_type='Prime';
+FROM users,orders 
+WHERE orders.user_id = users.user_id AND orders.date_time < '2022-07-01 00:00:00' AND order_type = 'Prime';
 ```
 """
 )
@@ -72,7 +75,9 @@ st.markdown(
 ### Give the best price slabs with respect to components 
 ```sql
 SELECT components.comp_id,price_slabs.min_qty,price_slabs.price,price_slabs.price * price_slabs.min_qty total_price,components.name 
-FROM price_slabs JOIN components ON price_slabs.comp_id=components.comp_id WHERE price <= 3 AND min_qty <= 100;
+FROM price_slabs 
+JOIN components ON price_slabs.comp_id = components.comp_id 
+WHERE price <= 3 AND min_qty <= 100;
 ```
 """
 )
@@ -92,7 +97,8 @@ st.markdown(
 ### Check how many manufacturers are selling surface mount components with lifecyle of NFNPD and the components is resistor.
 ```sql
 SELECT components.mf_id,manufacturer.name,manufacturer.location,components.lifecycle,components.category 
-FROM manufacturer JOIN components ON components.mf_id = manufacturer.mf_id AND (SELECT(mount_type='Surface Mount')) AND (SELECT(lifecycle='InProduction')) AND components.category='Resistors';
+FROM manufacturer 
+JOIN components ON components.mf_id = manufacturer.mf_id AND (SELECT(mount_type='Surface Mount')) AND (SELECT(lifecycle='InProduction')) AND components.category = 'Resistors';
 ```
 """
 )
@@ -112,12 +118,13 @@ st.markdown(
 ### Track users who are paying through cash 
 ```sql
 SELECT payments.method,orders.order_id,orders.user_id,users.name,phone_number,address,city,state,pincode,payments.trnx_no,payments.amount 
-FROM payments,orders,users where orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';
+FROM payments,orders,users 
+WHERE orders.user_id = users.user_id AND orders.order_id = payments.order_id AND payments.method = 'cash';
 ```
 """
 )
 cursor.execute(
-    "SELECT payments.method,orders.order_id,orders.user_id,users.name,phone_number,address,city,state,pincode,payments.trnx_no,payments.amount FROM payments,orders,users where orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';"
+    "SELECT payments.method,orders.order_id,orders.user_id,users.name,phone_number,address,city,state,pincode,payments.trnx_no,payments.amount FROM payments,orders,users WHERE orders.user_id=users.user_id AND orders.order_id=payments.order_id AND payments.method = 'cash';"
 )
 payments = cursor.fetchall()
 payments_df = pd.DataFrame(

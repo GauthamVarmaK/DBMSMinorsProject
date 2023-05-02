@@ -6,9 +6,9 @@ from config import db_config
 db = mysql.connector.connect(**db_config)
 cursor = db.cursor()
 
-st.set_page_config(page_title="Nikhil Queries", layout="wide", page_icon="🤵")
+st.set_page_config(page_title="Nikhil Queries", layout="wide", page_icon="🕊️")
 
-st.title("Nikhil Queries - [PES1UG21EC164]")
+st.title("Nikhil's Queries")
 
 st.markdown(
     """
@@ -21,7 +21,9 @@ st.markdown(
 ## Query 1
 ###  Select all components whose lead time is minimum from table Stock
 ```sql
-SELECT * FROM stock WHERE lead_time<1;
+SELECT *
+FROM stock
+WHERE lead_time < 1;
 ```
 """
 )
@@ -37,7 +39,9 @@ st.markdown(
 ## Query 2
 ### Retrieve all details from the table price_slabs where the price is unusually high
 ```sql
-SELECT * FROM price_slabs WHERE price_slabs.price > (SELECT AVG(price) FROM price_slabs);
+SELECT *
+FROM price_slabs
+WHERE price_slabs.price > (SELECT AVG(price) FROM price_slabs);
 ```
 """
 )
@@ -53,12 +57,14 @@ st.markdown(
 ## Query 3
 ### Display those locations which have more than one manufacturer stationed.
 ```sql
-SELECT location, count(*) as num FROM manufacturer GROUP BY(location) Having count(*)>1;
+SELECT location, COUNT(*) AS num
+FROM manufacturer 
+GROUP BY(location) HAVING COUNT(*)>1;
 ```
 """
 )
 cursor.execute(
-    "SELECT location, count(*) as num FROM manufacturer GROUP BY(location) Having count(*)>1;"
+    "SELECT location, COUNT(*) AS num FROM manufacturer GROUP BY(location) HAVING COUNT(*)>1;"
 )
 manufacturer = cursor.fetchall()
 manufacturer_df = pd.DataFrame(manufacturer, columns=["location", "num"])
@@ -70,12 +76,14 @@ st.markdown(
 ## Query 4
 ### Display the user_id, name  and phone number of customers whose order status is Missing
 ```sql
-SELECT users.user_id, users.name, users.phone_number, orders.status FROM users LEFT JOIN orders ON users.user_id=orders.user_id and orders.status='Missing';
+SELECT users.user_id, users.name, users.phone_number, orders.status
+FROM users 
+LEFT JOIN orders ON users.user_id=orders.user_id AND orders.status='Missing';
 ```
 """
 )
 cursor.execute(
-    "SELECT users.user_id, users.name, users.phone_number, orders.status FROM users LEFT JOIN orders ON users.user_id=orders.user_id and orders.status='Missing';"
+    "SELECT users.user_id, users.name, users.phone_number, orders.status FROM users LEFT JOIN orders ON users.user_id=orders.user_id AND orders.status='Missing';"
 )
 components = cursor.fetchall()
 components_df = pd.DataFrame(
@@ -89,12 +97,15 @@ st.markdown(
 ## Query 5
 ### Display the user id of those users who have made payments larger than 20000.
 ```sql
-SELECT users.user_id, orders.order_id, payments.trnx_no, payments.amount FROM users INNER JOIN orders ON users.user_id=orders.user_id INNER JOIN payments ON payments.order_id=orders.order_id where payments.amount>20000;
+SELECT users.user_id, orders.order_id, payments.trnx_no, payments.amount
+FROM users 
+INNER JOIN orders ON users.user_id=orders.user_id 
+INNER JOIN payments ON payments.order_id=orders.order_id WHERE payments.amount>20000;
 ```
 """
 )
 cursor.execute(
-    "SELECT users.user_id, orders.order_id, payments.trnx_no, payments.amount FROM users INNER JOIN orders ON users.user_id=orders.user_id INNER JOIN payments ON payments.order_id=orders.order_id where payments.amount>20000;"
+    "SELECT users.user_id, orders.order_id, payments.trnx_no, payments.amount FROM users INNER JOIN orders ON users.user_id=orders.user_id INNER JOIN payments ON payments.order_id=orders.order_id WHERE payments.amount>20000;"
 )
 payments = cursor.fetchall()
 payments_df = pd.DataFrame(
