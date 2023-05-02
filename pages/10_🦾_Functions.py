@@ -19,9 +19,9 @@ BEGIN
    DECLARE user_since DATE;
    DECLARE is_prime VARCHAR(5);
 
-   SELECT user_since INTO user_since
+   SELECT users.user_since INTO user_since
    FROM users
-   WHERE user_id = user_id;
+   WHERE users.user_id = user_id;
 
    IF TIMESTAMPDIFF(YEAR, user_since, CURDATE()) > 4 THEN
       SET is_prime = 'True';
