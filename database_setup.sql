@@ -93,7 +93,7 @@ CREATE VIEW user_age AS
 SELECT user_id, name, email_id, phone_number, dob, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, user_since, address, city, state, pincode
 FROM users;
 
--- payment_backup table for trigger demo
+-- payment_backup Table for trigger demo
 CREATE TABLE payments_backup(
    payment_id INT PRIMARY KEY,
    order_id INT,
@@ -115,7 +115,7 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Create a function to chech if a user is prime
+-- Create a function to check if a user is prime
 DELIMITER $$
 CREATE FUNCTION is_prime_user(user_id VARCHAR(50)) RETURNS VARCHAR(5)
 BEGIN
@@ -133,10 +133,10 @@ BEGIN
    END IF;
 
    RETURN is_prime;
-END;$$
+END $$
 DELIMITER ;
 
--- create procedure to restore deleted payments and delete from backup
+-- Create procedure to restore deleted payments and delete from backup
 DELIMITER $$
 CREATE PROCEDURE restore_payment(IN payment_id1 INT)
 BEGIN
@@ -166,7 +166,7 @@ BEGIN
 END $$
 DELIMITER ;
 
--- create a view to get bill for an order
+-- Create a view to get bill for an order
 CREATE VIEW bill_view AS
 SELECT
    order_id,
