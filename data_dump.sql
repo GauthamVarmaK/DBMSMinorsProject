@@ -62,7 +62,12 @@ INSERT INTO orders VALUES('259','a4','2023-04-14', 'BackOrder', 'Shipped');
 INSERT INTO orders VALUES('722','b7','2012-04-14', 'Regular', 'Missing');
 
 INSERT INTO order_comp VALUES('256', '16014451', '450');
+INSERT INTO order_comp VALUES('256', '16014453', '600');
+INSERT INTO order_comp VALUES('256', '16014452', '550');
+INSERT INTO order_comp VALUES('256', '16014457', '650');
 INSERT INTO order_comp VALUES('257', '16014452', '600');
+INSERT INTO order_comp VALUES('257', '16014451', '12500');
+INSERT INTO order_comp VALUES('258', '16014457', '125');
 INSERT INTO order_comp VALUES('258', '16014453', '9000');
 INSERT INTO order_comp VALUES('259', '16014454', '200');
 INSERT INTO order_comp VALUES('722', '16014457', '1200');

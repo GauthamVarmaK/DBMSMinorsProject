@@ -10,7 +10,7 @@ st.write("# Electronic Components Marketplace⚡")
 
 st.markdown(
     """
-    Mini-Project created for the partial fulfilment of the course **[U20CS301] DBMS**, CSE Minors, PES University.
+    Mini-Project created for the partial fulfilment of the course **[UE20CS301] DBMS**, CSE Minors, PES University.
 
     By: 
     | SRN | Name |

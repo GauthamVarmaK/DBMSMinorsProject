@@ -149,3 +149,31 @@ BEGIN
    WHERE payment_id = payment_id1;
 END $$
 DELIMITER ;
+
+
+-- Function to find best price for a component and quantity
+DELIMITER $$
+CREATE FUNCTION best_price(comp_id INT, qty INT) RETURNS DECIMAL(6,2)
+BEGIN
+   DECLARE price DECIMAL(6,2);
+   SELECT price_slabs.price INTO price
+   FROM price_slabs 
+   WHERE price_slabs.comp_id=comp_id AND price_slabs.min_qty<qty 
+   ORDER BY price_slabs.min_qty DESC
+   LIMIT 1;
+
+   RETURN price;
+END $$
+DELIMITER ;
+
+-- create a view to get bill for an order
+CREATE VIEW bill_view AS
+SELECT
+   order_id,
+   comp_id,
+   NAME AS comp_name,
+   qty,
+   best_price(comp_id, qty) AS price,
+   qty * best_price(comp_id, qty) AS amount
+FROM order_comp
+NATURAL JOIN components;
