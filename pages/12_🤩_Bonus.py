@@ -14,7 +14,7 @@ cursor.execute("DELETE FROM order_comp WHERE order_id=300;")
 cursor.execute("DELETE FROM order_comp WHERE order_id=300;")
 cursor.execute("DELETE FROM orders WHERE order_id=300;")
 
-st.write("Every wondered how an order can be placed and processed??")
+st.write("Ever wondered how an order can be placed and processed??")
 
 st.markdown("""
 ## 1 ) Orders Table
