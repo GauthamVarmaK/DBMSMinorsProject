@@ -94,7 +94,7 @@ st.dataframe(price_slabs_df)
 st.markdown(
     """
 ## Query 4
-### Check how many manufacturers are selling surface mount components with lifecyle of NFNPD and the components is resistor.
+### Check how many manufacturers are selling surface mount components with lifecyle of InProduction and the components is resistor.
 ```sql
 SELECT components.mf_id,manufacturer.name,manufacturer.location,components.lifecycle,components.category 
 FROM manufacturer 
